@@ -77,7 +77,7 @@ func (s *Server) parseTemplateFiles() {
 	log.Info("---> parseTemplateFiles() - enter")
 	defer log.Info("<--- parseTemplateFiles() - exit")
 
-	tpl := template.Must(template.ParseFiles("/home/eric/github/lker/pkg/templates/index.html.tpl"))
+	tpl := template.Must(template.ParseFiles("pkg/templates/index.html.tpl"))
 	s.Templates[tpl.Name()] = tpl
 }
 
