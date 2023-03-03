@@ -5,9 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.101.0">
-    <title>Starter Template · Bootstrap v4.6</title>
+    <meta http-equiv="Refresh" content={{ .RF }}>
+    <title>hmmmweird</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/starter-template/">
 
@@ -15,7 +14,6 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-
 
 
     <style>
@@ -112,9 +110,7 @@
     >
 
       <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
-          mostly barebones HTML document.</p>
+        <strong>{{ .B }}</strong>
       </div>
 
     </main><!-- /.container -->

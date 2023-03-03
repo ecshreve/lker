@@ -2,8 +2,10 @@ package server
 
 import (
 	"html/template"
+	"math/rand"
 	"net/http"
 
+	"github.com/ecshreve/lker/pkg/util"
 	"github.com/samsarahq/go/oops"
 
 	"golang.org/x/exp/slog"
@@ -33,7 +35,20 @@ func (s *Server) buildHandlers() {
 	indexHandler := func(w http.ResponseWriter, _ *http.Request) {
 		slog.Info("---> indexHandler() - enter")
 		defer slog.Info("<--- indexHandler() - exit")
-		if err := s.Templates["index.html.tpl"].ExecuteTemplate(w, "index.html.tpl", nil); err != nil {
+
+		type tplArgs struct {
+			B  int
+			RF int
+		}
+
+		args := tplArgs{
+			B:  util.GetNearestMs(),
+			RF: rand.Intn(10) + 20,
+		}
+
+		slog.Info("tpl args: %s", args)
+
+		if err := s.Templates["index.html.tpl"].ExecuteTemplate(w, "index.html.tpl", args); err != nil {
 			slog.Error("", oops.Wrapf(err, "error executing template"))
 		}
 	}
