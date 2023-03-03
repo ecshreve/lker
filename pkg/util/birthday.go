@@ -3,21 +3,29 @@ package util
 import (
 	"math"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
-func msUntilBday(bday time.Time) int {
+func msUntilBday(bday time.Time) int64 {
+	log.Info("---> msUntilBday() - enter")
+	defer log.Info("<--- msUntilBday() - exit")
+
 	today := time.Now()
 	nextBirthday := time.Date(today.Year(), bday.Month(), bday.Day(), 0, 0, 0, 0, bday.Location())
 	if nextBirthday.Before(today) {
 		nextBirthday = nextBirthday.AddDate(1, 0, 0)
 	}
-	ms := int(nextBirthday.Sub(today).Milliseconds() / 1000)
+	ms := int64(nextBirthday.Sub(today).Milliseconds())
 	return ms
 }
 
-func nearestBirthday(spiceGirls map[string]string) (string, int) {
+func nearestBirthday(spiceGirls map[string]string) (string, int64) {
+	log.Info("---> nearestBirthday() - enter")
+	defer log.Info("<--- nearestBirthday() - exit")
+
 	var nearestName string
-	nearest := math.MaxInt32
+	nearest := int64(math.MaxInt64)
 	for name, birthdayStr := range spiceGirls {
 		birthday, _ := time.Parse("01/02/2006", birthdayStr)
 		ms := msUntilBday(birthday)
@@ -29,7 +37,10 @@ func nearestBirthday(spiceGirls map[string]string) (string, int) {
 	return nearestName, nearest
 }
 
-func GetNearestMs() int {
+func GetNearestMs() int64 {
+	log.Info("---> GetNearestMs() - enter")
+	defer log.Info("<--- GetNearestMs() - exit")
+
 	spiceGirls := map[string]string{
 		"Victoria Beckham": "04/17/1974",
 		"Melanie Brown":    "05/29/1975",

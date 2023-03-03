@@ -8,7 +8,7 @@ import (
 	"github.com/ecshreve/lker/pkg/util"
 	"github.com/samsarahq/go/oops"
 
-	"golang.org/x/exp/slog"
+	log "github.com/sirupsen/logrus"
 )
 
 type Server struct {
@@ -18,6 +18,9 @@ type Server struct {
 }
 
 func NewServer() *Server {
+	log.Info("---> NewServer() - enter")
+	defer log.Info("<--- NewServer() - exit")
+
 	s := &Server{
 		ID:        "SERVER",
 		Templates: make(map[string]*template.Template),
@@ -30,42 +33,50 @@ func NewServer() *Server {
 }
 
 func (s *Server) buildHandlers() {
+	log.Info("---> buildHandlers() - enter")
+	defer log.Info("<--- buildHandlers() - exit")
+
 	handlers := make(map[string]func())
 
 	indexHandler := func(w http.ResponseWriter, _ *http.Request) {
-		slog.Info("---> indexHandler() - enter")
-		defer slog.Info("<--- indexHandler() - exit")
+		log.Info("---> indexHandler() - enter")
+		defer log.Info("<--- indexHandler() - exit")
 
 		type tplArgs struct {
-			B  int
+			B  int64
 			RF int
 		}
 
 		args := tplArgs{
 			B:  util.GetNearestMs(),
-			RF: rand.Intn(10) + 20,
+			RF: rand.Intn(10),
 		}
 
-		slog.Info("tpl args: %s", args)
+		log.Infof("tpl args: %v", args)
 
 		if err := s.Templates["index.html.tpl"].ExecuteTemplate(w, "index.html.tpl", args); err != nil {
-			slog.Error("", oops.Wrapf(err, "error executing template"))
+			log.Error("", oops.Wrapf(err, "error executing template"))
 		}
 	}
 	handlers["index"] = func() { http.HandleFunc("/", indexHandler) }
-
 	handlers["static"] = func() { http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static")))) }
 	s.Handlers = handlers
 }
 
 func (s *Server) registerHandlers() {
+	log.Info("---> registerHandlers() - enter")
+	defer log.Info("<--- registerHandlers() - exit")
+
 	for route, handler := range s.Handlers {
 		handler()
-		slog.Info("registered handler for %s", route)
+		log.Infof("registered handler for %s", route)
 	}
 }
 
 func (s *Server) parseTemplateFiles() {
+	log.Info("---> parseTemplateFiles() - enter")
+	defer log.Info("<--- parseTemplateFiles() - exit")
+
 	tpl := template.Must(template.ParseFiles("/home/eric/github/lker/pkg/templates/index.html.tpl"))
 	s.Templates[tpl.Name()] = tpl
 }
