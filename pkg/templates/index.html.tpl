@@ -5,8 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta http-equiv="refresh" content="{{ .RF }}">
-    <title>hmmmweird</title>
+    <script>
+      var targ = {{ .B }};
+      var start = new Date().getTime();
+      var x = setInterval(function() {
+        var now = new Date().getTime();
+        diff = now - start
+        targ = targ - diff
+        document.getElementById("count").innerHTML = "<strong>" + targ.toString() + "<strong>";
+        if (targ < 100) {
+            clearInterval(x);
+            document.getElementById("count").innerHTML = "";
+        }
+        start = now
+      }, 1000);
+    </script>
+    <title>guess</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/starter-template/">
 
@@ -45,9 +59,7 @@
       class="container"
     >
       <div class="wave"></div>
-      <div class="starter-template">
-        <strong>{{ .B }}</strong>
-      </div>
+      <div id="count"></div>
       <div class="wave"></div>
 
     </main><!-- /.container -->

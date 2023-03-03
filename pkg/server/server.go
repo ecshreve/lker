@@ -2,7 +2,6 @@ package server
 
 import (
 	"html/template"
-	"math/rand"
 	"net/http"
 
 	"github.com/ecshreve/lker/pkg/util"
@@ -48,8 +47,7 @@ func (s *Server) buildHandlers() {
 		}
 
 		args := tplArgs{
-			B:  util.GetNearestMs(),
-			RF: rand.Intn(10),
+			B: util.GetNearestMs(),
 		}
 
 		log.Infof("tpl args: %v", args)

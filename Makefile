@@ -25,3 +25,10 @@ go-testc:
 	go test -race -coverprofile=coverage.txt -covermode=atomic github.com/ecshreve/${BINARY_NAME}/...
 
 go-all: test build run
+
+
+docker-build:
+	docker build --network="host" --tag registry.digitalocean.com/shreggie/lker:custom .
+
+docker-run:
+	docker run -d --network="host" --name="lker" registry.digitalocean.com/shreggie/lker:custom 

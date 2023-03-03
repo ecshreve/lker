@@ -7,47 +7,40 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func msUntilBday(bday time.Time) int64 {
-	log.Info("---> msUntilBday() - enter")
-	defer log.Info("<--- msUntilBday() - exit")
+func timeNowDiff(t time.Time) int64 {
+	log.Info("---> timeNowDiff() - enter")
+	defer log.Info("<--- timeNowDiff() - exit")
 
 	today := time.Now()
-	nextBirthday := time.Date(today.Year(), bday.Month(), bday.Day(), 0, 0, 0, 0, bday.Location())
-	if nextBirthday.Before(today) {
-		nextBirthday = nextBirthday.AddDate(1, 0, 0)
-	}
-	ms := int64(nextBirthday.Sub(today).Milliseconds())
-	return ms
+	target := time.Date(today.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	return int64(math.Abs(float64(target.UnixMilli() - today.UnixMilli())))
 }
 
-func nearestBirthday(spiceGirls map[string]string) (string, int64) {
-	log.Info("---> nearestBirthday() - enter")
-	defer log.Info("<--- nearestBirthday() - exit")
+func nearest(dateStrings []string) int64 {
+	log.Info("---> nearest() - enter")
+	defer log.Info("<--- nearest() - exit")
 
-	var nearestName string
 	nearest := int64(math.MaxInt64)
-	for name, birthdayStr := range spiceGirls {
-		birthday, _ := time.Parse("01/02/2006", birthdayStr)
-		ms := msUntilBday(birthday)
-		if ms < nearest {
-			nearestName = name
+	for _, d := range dateStrings {
+		target, _ := time.Parse("01/02/2006", d)
+		if ms := timeNowDiff(target); ms < nearest {
 			nearest = ms
 		}
 	}
-	return nearestName, nearest
+	return nearest
 }
 
 func GetNearestMs() int64 {
 	log.Info("---> GetNearestMs() - enter")
 	defer log.Info("<--- GetNearestMs() - exit")
 
-	spiceGirls := map[string]string{
-		"Victoria Beckham": "04/17/1974",
-		"Melanie Brown":    "05/29/1975",
-		"Emma Bunton":      "01/21/1976",
-		"Melanie Chisholm": "01/12/1974",
-		"Geri Halliwell":   "08/06/1972",
+	datesToDiff := []string{
+		"04/17/1974", //" Victoria Beckham":
+		"05/29/1975", // "Melanie Brown":
+		"01/21/1976", // "Emma Bunton":
+		"01/12/1974", //		"Melanie Chisholm":
+		"08/06/1972", //		"Geri Halliwell":
 	}
-	_, nearest := nearestBirthday(spiceGirls)
-	return nearest
+	n := nearest(datesToDiff)
+	return n
 }
