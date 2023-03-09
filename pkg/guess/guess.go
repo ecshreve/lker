@@ -3,6 +3,7 @@ package guess
 import (
 	"strings"
 
+	goaway "github.com/TwiN/go-away"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/samsarahq/go/oops"
 	log "github.com/sirupsen/logrus"
@@ -23,6 +24,10 @@ func Sanitize(gstr string) (string, error) {
 	var sanitizerInstance = bluemonday.StrictPolicy()
 	sanStr := sanitizerInstance.Sanitize(gstr)
 
+	if goaway.IsProfane(sanStr) {
+		return goaway.Censor(sanStr), oops.Errorf("profanity detected in guess")
+	}
+
 	// Custom sanitizing.
 	var chars []rune
 	for _, s := range strings.ToUpper(sanStr) {
@@ -32,5 +37,6 @@ func Sanitize(gstr string) (string, error) {
 		chars = append(chars, s)
 	}
 
-	return string(chars), nil
+	retStr := string(chars)
+	return goaway.Censor(retStr), nil
 }
