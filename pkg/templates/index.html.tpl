@@ -79,6 +79,45 @@
       <div id="count"></div>
       <div class="wave"></div>
 
+      <div class="row">
+        <div class="col-4">
+          <div>
+            <form>
+              <div>
+                <label for="guessbox">guessbox</label>
+                <input
+                  type="text"
+                  name="guessbox"
+                  id="guessbox"
+                >
+              </div>
+              <button type="submit" class="btn btn-primary">guess</button>
+            </form>
+          </div>
+        </div>
+        <div
+          class="col-8"
+          style="padding-left: 40px;"
+        >
+          {{range .G}}
+          <div>{{ . }}</div>{{end}}
+        </div>
+      </div>
+
+      <div>
+        <ul
+          class="cloud"
+          aria-label="Webdev word cloud"
+        >
+          {{ range .W }}
+          <li><a
+              href="#"
+              data-weight="{{ .Rank }}"
+            >{{ .Val }}</a></li>{{end}}
+        </ul>
+      </div>
+
+
     </main><!-- /.container -->
 
 
