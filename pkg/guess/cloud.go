@@ -5,27 +5,29 @@ import (
 	"strings"
 
 	"github.com/samsarahq/go/oops"
-	log "github.com/sirupsen/logrus"
 )
 
 // MAX_ITEM_RANK represents the ceiling of our ranking scale.
 const MAX_ITEM_RANK int = 20
 
+// Item represents a single member of a Cloud.
 type Item struct {
 	Val   string
 	Count int
 	Rank  int
 }
 
+// Cloud represents a "word cloud", containing some set of keys, each key having
+// some count of occurrences, resulting in a natural ability to rank the order of
+// key occurrence.
 type Cloud struct {
 	Keys  []string
 	Items map[string]*Item
 }
 
+// NewCloud initializes an instance of Cloud with the letters of the alphabet
+// as its set of keys.
 func NewCloud() *Cloud {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
 	alphabet := strings.Split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
 	items := make(map[string]*Item)
 	for _, k := range alphabet {
@@ -35,26 +37,22 @@ func NewCloud() *Cloud {
 			Rank:  0,
 		}
 	}
+
 	return &Cloud{
 		Keys:  alphabet,
 		Items: items,
 	}
 }
 
+// ProcessGuess takes an input string, sanitizes it, applies updates to the word
+// cloud according to the contents of the guess.
 func (c *Cloud) ProcessGuess(gstr string) error {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
 	g, err := Sanitize(gstr)
 	if err != nil {
 		return oops.Wrapf(err, "unable to sanitize")
 	}
 
-	for _, s := range strings.ToUpper(g) {
-		if int(s) < int('A') || int(s) > int('Z') {
-			continue
-		}
-
+	for _, s := range g {
 		if _, ok := c.Items[string(s)]; !ok {
 			continue
 		}
@@ -66,10 +64,9 @@ func (c *Cloud) ProcessGuess(gstr string) error {
 	return nil
 }
 
+// UpdateRanks iterates through the items in the cloud and updates each item's
+// rank field according to current counts.
 func (c *Cloud) UpdateRanks() {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
 	var items []*Item
 	for _, i := range c.Items {
 		items = append(items, i)

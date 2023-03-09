@@ -5,15 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="guess">
+
+    <!-- countdown from initial value -->
     <script>
       var targ = {{ .B }};
-      var start = new Date().getTime();
       var x = setInterval(function() {
-        var now = new Date().getTime();
-        targ = targ - (now - start)
+        targ = targ - (1011)
         document.getElementById("count").innerHTML = "<strong>" + targ.toString() + "<strong>";
-        start = now
-      }, 1000);
+      }, 1011);
     </script>
 
     <title>guess</title>
@@ -21,25 +20,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <!-- Custom styles -->
-    <link href="/static/style.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
   </head>
 
   <body>
+    <main class="container">
 
-    <main
-      role="main"
-      class="container"
-    >
       <div class="wave"></div>
+      <div class="wave"></div>
+
+      <!-- countdown value -->
       <div id="count"></div>
-      <div class="wave"></div>
-
 
       <div
         class="row"
         style="margin-top: 25px;"
       >
         <div class="col-2"></div>
+
+        <!-- guess form -->
         <div class="col-4">
           <form
             method="POST"
@@ -55,6 +54,8 @@
             </div>
           </form>
         </div>
+
+        <!-- scrolling text -->
         <div class="col-6">
           <div id="scroll-container">
             <div id="scroll-text">
@@ -64,6 +65,7 @@
         </div>
       </div>
 
+      <!-- letter cloud -->
       <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
