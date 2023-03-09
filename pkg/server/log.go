@@ -32,10 +32,10 @@ func getColorByLevel(level log.Level) int {
 		return colorYellow
 	case log.ErrorLevel, log.FatalLevel, log.PanicLevel:
 		return colorRed
-	case log.DebugLevel:
+	case log.DebugLevel, log.InfoLevel:
 		return colorPurple
 	default:
-		return colorBlue
+		return colorGray
 	}
 }
 

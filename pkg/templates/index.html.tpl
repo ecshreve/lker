@@ -68,7 +68,7 @@
                 name="guessbox"
                 id="guessbox"
               >
-              <button type="submit" class="btn-custom">guess</button>
+              <button type="submit" disabled="true" class="btn-custom">guess</button>
             </div>
           </form>
         </div>
