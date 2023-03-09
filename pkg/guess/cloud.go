@@ -4,64 +4,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/samsarahq/go/oops"
 	log "github.com/sirupsen/logrus"
 )
 
-type ItemRank int
-
+// MAX_ITEM_RANK represents the ceiling of our ranking scale.
 const MAX_ITEM_RANK int = 20
-const MAX_GUESS_LEN int = 220
-
-func (i *Item) GetRank(r int) int {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
-	if i.Count <= 0 {
-		return 1
-	}
-	if r == 0 {
-		return MAX_ITEM_RANK
-	}
-	if r > int(MAX_ITEM_RANK) {
-		return 1
-	}
-	return MAX_ITEM_RANK - r
-}
-
-func Validate(gstr string) error {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
-	if len(gstr) > MAX_GUESS_LEN {
-		return oops.Errorf("too long")
-	}
-
-	return nil
-}
-
-func Sanitize(gstr string) (string, error) {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
-	if err := Validate(gstr); err != nil {
-		return "", oops.Wrapf(err, "validating")
-	}
-
-	var sanitizerInstance = bluemonday.StrictPolicy()
-	sanStr := sanitizerInstance.Sanitize(gstr)
-
-	var chars []rune
-	for _, s := range strings.ToUpper(sanStr) {
-		if int(s) < int('A') || int(s) > int('Z') {
-			continue
-		}
-		chars = append(chars, s)
-	}
-
-	return string(chars), nil
-}
 
 type Item struct {
 	Val   string
@@ -93,12 +41,13 @@ func NewCloud() *Cloud {
 	}
 }
 
-func (c *Cloud) ProcessGuess(g string) error {
+func (c *Cloud) ProcessGuess(gstr string) error {
 	log.Trace("---> - enter")
 	defer log.Trace("<--- - exit")
 
-	if len(g) > MAX_GUESS_LEN {
-		return oops.Errorf("guess too long")
+	g, err := Sanitize(gstr)
+	if err != nil {
+		return oops.Wrapf(err, "unable to sanitize")
 	}
 
 	for _, s := range strings.ToUpper(g) {
@@ -131,7 +80,10 @@ func (c *Cloud) UpdateRanks() {
 	})
 
 	for ind, item := range items {
-		item.Rank = item.GetRank(ind)
-		c.Items[item.Val] = item
+		rankVal := MAX_ITEM_RANK - ind
+		if item.Count <= 0 || ind > MAX_ITEM_RANK {
+			rankVal = 1
+		}
+		c.Items[item.Val].Rank = rankVal
 	}
 }
