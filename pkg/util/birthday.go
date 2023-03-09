@@ -8,8 +8,8 @@ import (
 )
 
 func timeNowDiff(t time.Time) int64 {
-	log.Info("---> timeNowDiff() - enter")
-	defer log.Info("<--- timeNowDiff() - exit")
+	log.Trace("---> timeNowDiff() - enter")
+	defer log.Trace("<--- timeNowDiff() - exit")
 
 	today := time.Now()
 	target := time.Date(today.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
@@ -17,8 +17,8 @@ func timeNowDiff(t time.Time) int64 {
 }
 
 func nearest(dateStrings []string) int64 {
-	log.Info("---> nearest() - enter")
-	defer log.Info("<--- nearest() - exit")
+	log.Trace("---> nearest() - enter")
+	defer log.Trace("<--- nearest() - exit")
 
 	nearest := int64(math.MaxInt64)
 	for _, d := range dateStrings {
@@ -31,8 +31,8 @@ func nearest(dateStrings []string) int64 {
 }
 
 func GetNearestMs() int64 {
-	log.Info("---> GetNearestMs() - enter")
-	defer log.Info("<--- GetNearestMs() - exit")
+	log.Trace("---> GetNearestMs() - enter")
+	defer log.Trace("<--- GetNearestMs() - exit")
 
 	datesToDiff := []string{
 		"04/17/1974", //" Victoria Beckham":

@@ -3,6 +3,11 @@ body {
   animation: fadeBackground 10s;
 }
 
+.btn-custom {
+  background-color: rgb(138, 173, 208);
+  opacity: 50%;
+}
+
 .starter-template {
   padding: 3rem 1.5rem;
   text-align: center;
