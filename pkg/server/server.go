@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 
 	"github.com/ecshreve/lker/pkg/guess"
@@ -59,6 +61,14 @@ func (s *Server) IndexHandler(c *gin.Context) {
 			return
 		}
 		log.Debug("sanitized: ", g)
+		if len(s.Guesses) >= 100 {
+			choice := rand.Intn(99)
+			evict := s.Guesses[choice]
+			s.Guesses[choice] = g
+			log.Debug(fmt.Sprintf("evicted guess %s at index %d in list of %d guesses", evict, choice, len(s.Guesses)))
+			return
+		}
+
 		s.Guesses = append(s.Guesses, g)
 	}
 
