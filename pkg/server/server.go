@@ -1,6 +1,7 @@
 package server
 
 import (
+	"math/rand"
 	"net/http"
 	"sort"
 	"strings"
@@ -18,43 +19,55 @@ type Guess struct {
 	GuessVal string `form:"guessbox"`
 }
 
-type CloudEntry struct {
+type Entry struct {
 	Val   string
 	Count int
 	Rank  int
 }
 
-type ByCount []*CloudEntry
-
-func (a ByCount) Len() int           { return len(a) }
-func (a ByCount) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByCount) Less(i, j int) bool { return a[i].Count < a[j].Count }
-
 type Cloud struct {
-	Entries []*CloudEntry
+	Entries map[string]*Entry
 	Total   int
 }
 
-func (c *Cloud) UpdateRanks() {
-	sort.Slice(c.Entries, func(i, j int) bool {
-		return c.Entries[i].Count < c.Entries[j].Count
-	})
-
-	for ind := range c.Entries {
-		if c.Entries[ind].Count == 0 {
-			c.Entries[ind].Rank = 1
-			continue
-		}
-		if ind > 19 {
-			c.Entries[ind].Rank = 20
-			continue
-		}
-		c.Entries[ind].Rank = ind + 1
+func (c *Cloud) Mix() []*Entry {
+	picked := make(map[string]bool)
+	alphabet := strings.Split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
+	for _, a := range alphabet {
+		picked[a] = false
 	}
 
-	sort.Slice(c.Entries, func(i, j int) bool {
-		return c.Entries[i].Val < c.Entries[j].Val
+	var e []*Entry
+	for len(e) < 26 {
+		p := rand.Intn(len(alphabet))
+		if picked[alphabet[p]] {
+			continue
+		}
+		e = append(e, c.Entries[alphabet[p]])
+		picked[alphabet[p]] = true
+	}
+	return e
+}
+
+func (c *Cloud) UpdateRanks() {
+	var lst []*Entry
+	for _, e := range c.Entries {
+		lst = append(lst, e)
+	}
+	sort.Slice(lst, func(i, j int) bool {
+		return lst[i].Count < lst[j].Count
 	})
+	for k, e := range lst {
+		if e.Count == 0 {
+			c.Entries[e.Val].Rank = 1
+			continue
+		}
+		if k < 6 {
+			c.Entries[e.Val].Rank = 1
+			continue
+		}
+		c.Entries[e.Val].Rank = k - 5
+	}
 }
 
 type Server struct {
@@ -68,14 +81,17 @@ func NewServer() *Server {
 	log.Info("---> NewServer() - enter")
 	defer log.Info("<--- NewServer() - exit")
 
-	ac := &Cloud{}
+	ac := &Cloud{
+		Entries: make(map[string]*Entry),
+		Total:   0,
+	}
 	alphabet := strings.Split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
-	for i := range alphabet {
-		ac.Entries = append(ac.Entries, &CloudEntry{
-			Val:   string(alphabet[i]),
+	for _, i := range alphabet {
+		ac.Entries[i] = &Entry{
+			Val:   i,
 			Count: 0,
 			Rank:  1,
-		})
+		}
 	}
 
 	s := &Server{
@@ -102,7 +118,12 @@ func (s *Server) IndexHandler(c *gin.Context) {
 		g.GuessVal = strings.ToUpper(g.GuessVal)
 		s.Guesses = append(s.Guesses, g.GuessVal)
 		for _, l := range g.GuessVal {
-			s.AlphaCloud.Entries[int(l)-int('A')].Count += 1
+			if int(l) < int('A') || int(l) > int('Z') {
+				continue
+			}
+			keyval := string(l)
+
+			s.AlphaCloud.Entries[keyval].Count += 1
 			s.AlphaCloud.Total += 1
 		}
 		s.AlphaCloud.UpdateRanks()
@@ -112,7 +133,7 @@ func (s *Server) IndexHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html.tpl", gin.H{
 		"B": val,
 		"G": s.Guesses,
-		"W": s.AlphaCloud.Entries,
+		"W": s.AlphaCloud.Mix(),
 	})
 	pretty.Print(s.AlphaCloud)
 }

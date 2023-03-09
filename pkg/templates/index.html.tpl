@@ -79,43 +79,49 @@
       <div id="count"></div>
       <div class="wave"></div>
 
-      <div class="row">
+      <div
+        class="row"
+        style="margin-top: 25px;"
+      >
+        <div class="col-2"></div>
         <div class="col-4">
-          <div>
-            <form>
-              <div>
-                <label for="guessbox">guessbox</label>
-                <input
-                  type="text"
-                  name="guessbox"
-                  id="guessbox"
-                >
-              </div>
+          <form>
+            <div>
+              <input
+                type="text"
+                name="guessbox"
+                id="guessbox"
+              >
               <button type="submit" class="btn btn-primary">guess</button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
-        <div
-          class="col-8"
-          style="padding-left: 40px;"
-        >
-          {{range .G}}
-          <div>{{ . }}</div>{{end}}
+        <div class="col-6">
+          <div id="scroll-container">
+            <div id="scroll-text">
+              {{range .G}}{{ . }}</br>{{end}}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div>
-        <ul
-          class="cloud"
-          aria-label="Webdev word cloud"
-        >
-          {{ range .W }}
-          <li><a
-              href="#"
-              data-weight="{{ .Rank }}"
-            >{{ .Val }}</a></li>{{end}}
-        </ul>
+
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <ul class="cloud">
+            {{ range .W }}
+            <li><a
+                href="#"
+                data-weight="{{ .Rank }}"
+              >{{ .Val }}</a></li>{{end}}
+          </ul>
+        </div>
+        <div class="col-2"></div>
       </div>
+
+
+
 
 
     </main><!-- /.container -->
