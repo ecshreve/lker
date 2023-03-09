@@ -83,7 +83,7 @@ func (s *Server) registerHandlers() {
 	log.Trace("---> - enter")
 	defer log.Trace("<--- - exit")
 
-	s.Router.Static("/static", "./static")
+	s.Router.StaticFile("/static/style.css", "./static/style.css")
 	s.Router.StaticFile("favicon.ico", "./static/favicon.ico")
 
 	s.Router.LoadHTMLGlob("pkg/templates/*")
