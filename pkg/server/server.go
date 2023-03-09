@@ -45,24 +45,25 @@ func (s *Server) IndexHandler(c *gin.Context) {
 	log.Trace("---> - enter")
 	defer log.Trace("<--- - exit")
 
-	guessRaw := c.PostForm("guessbox")
-	log.Debug("guessRaw: ", guessRaw)
-	if guessRaw != "" {
+	if guessRaw := c.PostForm("guessbox"); guessRaw != "" {
+		log.Debug("guessRaw: ", guessRaw)
+
 		g, err := guess.Sanitize(guessRaw)
 		if err != nil {
-			panic(err)
+			log.Error(oops.Wrapf(err, "unable to sanitize guess: %s", guessRaw))
+			return
 		}
-		log.Debug("sanitized: ", g)
 
 		if err := s.LetterCloud.ProcessGuess(g); err != nil {
-			panic(err)
+			log.Error(oops.Wrapf(err, "unable to process guess for cloud: %v", g))
+			return
 		}
+		log.Debug("sanitized: ", g)
 		s.Guesses = append(s.Guesses, g)
 	}
 
-	val := util.GetNearestMs()
 	c.HTML(http.StatusOK, "index.html.tpl", gin.H{
-		"B": val,
+		"B": util.GetNearestMs(),
 		"G": s.Guesses,
 		"W": s.LetterCloud.Items,
 	})
@@ -71,7 +72,6 @@ func (s *Server) IndexHandler(c *gin.Context) {
 func (s *Server) registerHandlers() {
 	log.Trace("---> - enter")
 	defer log.Trace("<--- - exit")
-	gin.ForceConsoleColor()
 
 	s.Router.Static("/static", "./static")
 	s.Router.StaticFile("favicon.ico", "./static/favicon.ico")
