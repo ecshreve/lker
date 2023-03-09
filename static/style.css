@@ -8,11 +8,6 @@ body {
   opacity: 50%;
 }
 
-.starter-template {
-  padding: 3rem 1.5rem;
-  text-align: center;
-}
-
 body {
   margin: auto;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -99,10 +94,6 @@ ul.cloud {
 }
 
 ul.cloud a {
-  /*   
-  Not supported by any browser at the moment :(
-  --size: attr(data-weight number); 
-  */
   --size: 6;
   --color: rgb(218, 98, 98);
   color: var(--color);
@@ -112,11 +103,6 @@ ul.cloud a {
   margin-top: 100px;
   position: relative;
   text-decoration: none;
-
-  /* 
-  For different tones of a single color
-  opacity: calc((15 - (9 - var(--size))) / 15); 
-  */
 }
 
 ul.cloud a[data-weight="1"] {
@@ -211,7 +197,7 @@ ul.cloud li:nth-child(4n+1) a {
   --color: rgb(142, 85, 116);
 }
 
-ul.cloud a::hover {
+ul.cloud li:hover {
   content: "";
   position: absolute;
   top: 0;

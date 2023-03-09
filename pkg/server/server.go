@@ -7,11 +7,10 @@ import (
 
 	"github.com/ecshreve/lker/pkg/guess"
 	"github.com/ecshreve/lker/pkg/util"
+
 	"github.com/gin-gonic/gin"
 	"github.com/samsarahq/go/oops"
 	log "github.com/sirupsen/logrus"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type Server struct {
@@ -22,9 +21,6 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
 	s := &Server{
 		ID:          "SERVER",
 		Router:      gin.Default(),
@@ -44,9 +40,6 @@ func (s *Server) PingHandler(c *gin.Context) {
 }
 
 func (s *Server) IndexHandler(c *gin.Context) {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
 	if guessRaw := c.PostForm("guessbox"); guessRaw != "" {
 		log.Debug("guessRaw: ", guessRaw)
 
@@ -81,14 +74,12 @@ func (s *Server) IndexHandler(c *gin.Context) {
 		"B": util.GetNearestMs(),
 		"G": s.Guesses,
 		"W": s.LetterCloud.Items,
+		"D": "",
 	})
 }
 
 func (s *Server) registerHandlers() {
-	log.Trace("---> - enter")
-	defer log.Trace("<--- - exit")
-
-	s.Router.StaticFile("/static/style.css", "./static/style.css")
+	s.Router.StaticFile("style.css", "./static/style.css")
 	s.Router.StaticFile("favicon.ico", "./static/favicon.ico")
 
 	s.Router.LoadHTMLGlob("pkg/templates/*")
@@ -96,6 +87,9 @@ func (s *Server) registerHandlers() {
 	s.Router.POST("/", s.IndexHandler)
 	s.Router.GET("/ping", s.PingHandler)
 
+	if err := s.Router.SetTrustedProxies(nil); err != nil {
+		log.Error(oops.Wrapf(err, "unable to set proxies"))
+	}
 }
 
 func (s *Server) Serve() error {
