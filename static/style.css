@@ -89,7 +89,7 @@ ul.cloud {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  line-height: 2.75rem;
+  line-height: 0.75rem;
   width: 100%;
 }
 
@@ -98,14 +98,16 @@ ul.cloud a {
   Not supported by any browser at the moment :(
   --size: attr(data-weight number); 
   */
-  --size: 4;
-  --color: #a33;
+  --size: 6;
+  --color: rgb(218, 98, 98);
   color: var(--color);
-  font-size: calc(var(--size) * 0.25rem + 0.5rem);
+  font-size: calc(var(--size) * 0.5rem + 0.5rem);
   display: block;
   padding: 0.125rem 0.25rem;
+  margin-top: 100px;
   position: relative;
   text-decoration: none;
+
   /* 
   For different tones of a single color
   opacity: calc((15 - (9 - var(--size))) / 15); 
@@ -177,43 +179,34 @@ ul.cloud a[data-weight="16"] {
 }
 
 ul.cloud a[data-weight="17"] {
-  --size: 17;
-}
-
-ul.cloud a[data-weight="18"] {
   --size: 18;
 }
 
-ul.cloud a[data-weight="19"] {
-  --size: 19;
-}
-
-ul.cloud a[data-weight="20"] {
+ul.cloud a[data-weight="18"] {
   --size: 20;
 }
 
-ul[data-show-value] a::after {
-  content: " (" attr(data-weight) ")";
-  font-size: 1rem;
+ul.cloud a[data-weight="19"] {
+  --size: 22;
+}
+
+ul.cloud a[data-weight="20"] {
+  --size: 26;
 }
 
 ul.cloud li:nth-child(2n+1) a {
-  --color: #181;
+  --color: rgb(57, 100, 57);
 }
 
 ul.cloud li:nth-child(3n+1) a {
-  --color: #33a;
+  --color: rgb(44, 44, 108);
 }
 
 ul.cloud li:nth-child(4n+1) a {
-  --color: #c38;
+  --color: rgb(142, 85, 116);
 }
 
-ul.cloud a:focus {
-  outline: 1px dashed;
-}
-
-ul.cloud a::before {
+ul.cloud a::hover {
   content: "";
   position: absolute;
   top: 0;
@@ -226,13 +219,65 @@ ul.cloud a::before {
   transition: width 0.25s;
 }
 
-ul.cloud a:focus::before,
-ul.cloud a:hover::before {
-  width: 100%;
-}
-
 @media (prefers-reduced-motion) {
   ul.cloud * {
     transition: none !important;
+  }
+}
+
+#scroll-container {
+  /* border: 1px solid black; */
+  border-radius: 5px;
+  height: 100px;
+  overflow: hidden;
+}
+
+#scroll-text {
+  height: 100%;
+  text-align: center;
+
+  /* animation properties */
+  -moz-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+
+  -moz-animation: my-animation 15s linear infinite;
+  -webkit-animation: my-animation 15s linear infinite;
+  animation: my-animation 15s linear infinite;
+}
+
+/* for Firefox */
+@-moz-keyframes my-animation {
+  from {
+    -moz-transform: translateY(-100%);
+  }
+
+  to {
+    -moz-transform: translateY(100%);
+  }
+}
+
+/* for Chrome */
+@-webkit-keyframes my-animation {
+  from {
+    -webkit-transform: translateY(-100%);
+  }
+
+  to {
+    -webkit-transform: translateY(100%);
+  }
+}
+
+@keyframes my-animation {
+  from {
+    -moz-transform: translateY(-100%);
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  to {
+    -moz-transform: translateY(100%);
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
   }
 }
