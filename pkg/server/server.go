@@ -28,7 +28,7 @@ func NewServer() *Server {
 		Router:      gin.Default(),
 		Clock:       clock.New(),
 		Guesses:     []string{},
-		LetterCloud: guess.NewCloud(),
+		LetterCloud: guess.DefaultCloud(),
 	}
 
 	s.registerHandlers()
