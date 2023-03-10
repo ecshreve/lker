@@ -90,7 +90,7 @@ func (s *Server) registerHandlers() {
 	s.Router.StaticFile("style.css", "./static/style.css")
 	s.Router.StaticFile("favicon.ico", "./static/favicon.ico")
 
-	s.Router.LoadHTMLGlob("/lker/pkg/templates/*.tpl")
+	s.Router.LoadHTMLGlob("pkg/templates/*")
 	s.Router.GET("/", s.IndexHandler)
 	s.Router.POST("/", s.IndexHandler)
 	s.Router.GET("/ping", s.PingHandler)
