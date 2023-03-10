@@ -30,8 +30,11 @@ go-all: test build run
 docker-build:
 	docker build --network="host" --tag registry.digitalocean.com/shreggie/lker:custom .
 
+docker-push: docker-build
+	docker push registry.digitalocean.com/shreggie/lker:custom
+
 docker-run:
 	docker run -d --network="host" --name="lker" registry.digitalocean.com/shreggie/lker:custom 
 
 docker-run-prod:
-	docker run -d --publish="0.0.0.0:80:8880 --name="lker" registry.digitalocean.com/shreggie/lker:custom 
+	docker run -d --publish="0.0.0.0:80:8880" --name="lker" registry.digitalocean.com/shreggie/lker:custom
