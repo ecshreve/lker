@@ -25,7 +25,9 @@ jobs:
         run: go get ./...
 
       - name: Build
-        run: make go-build
+        run: |
+          make go-build
+          make go-install
 
       - name: Test
         run: make go-test
