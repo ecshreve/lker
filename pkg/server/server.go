@@ -39,34 +39,33 @@ func (s *Server) PingHandler(c *gin.Context) {
 	})
 }
 
+func (s *Server) PostFormHandler(guessRaw string) error {
+	g, err := guess.Sanitize(guessRaw)
+	if err != nil {
+		return oops.Wrapf(err, "unable to sanitize guess: %s", guessRaw)
+	}
+
+	if err = s.LetterCloud.ProcessGuess(g); err != nil {
+		return oops.Wrapf(err, "unable to process guess for cloud: %v", g)
+	}
+
+	if len(s.Guesses) >= 100 {
+		choice := rand.Intn(99)
+		evict := s.Guesses[choice]
+		s.Guesses[choice] = g
+		log.Debug(fmt.Sprintf("evicted guess %s at index %d in list of %d guesses", evict, choice, len(s.Guesses)))
+		return nil
+	}
+
+	s.Guesses = append(s.Guesses, g)
+	return nil
+}
+
 func (s *Server) IndexHandler(c *gin.Context) {
 	if guessRaw := c.PostForm("guessbox"); guessRaw != "" {
 		log.Debug("guessRaw: ", guessRaw)
-
-		var sanitizeError error
-		var g string
-		g, sanitizeError = guess.Sanitize(guessRaw)
-		if sanitizeError != nil {
-			log.Error(oops.Wrapf(sanitizeError, "unable to sanitize guess: %s", guessRaw))
-			g = ""
-		}
-
-		if g != "" {
-			if sanitizeError = s.LetterCloud.ProcessGuess(g); sanitizeError != nil {
-				log.Error(oops.Wrapf(sanitizeError, "unable to process guess for cloud: %v", g))
-			}
-
-			if sanitizeError == nil {
-				log.Debug("sanitized: ", g)
-				if len(s.Guesses) >= 100 {
-					choice := rand.Intn(99)
-					evict := s.Guesses[choice]
-					s.Guesses[choice] = g
-					log.Debug(fmt.Sprintf("evicted guess %s at index %d in list of %d guesses", evict, choice, len(s.Guesses)))
-				} else {
-					s.Guesses = append(s.Guesses, g)
-				}
-			}
+		if err := s.PostFormHandler(guessRaw); err != nil {
+			log.Error(oops.Wrapf(err, "processing form"))
 		}
 	}
 
