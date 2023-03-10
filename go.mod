@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/TwiN/go-away v1.6.10
+	github.com/benbjohnson/clock v1.3.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/microcosm-cc/bluemonday v1.0.23
 	github.com/samsarahq/go/oops v0.0.0-20220211150445-4b291d6feac4

@@ -8,6 +8,7 @@ import (
 	"github.com/ecshreve/lker/pkg/guess"
 	"github.com/ecshreve/lker/pkg/util"
 
+	"github.com/benbjohnson/clock"
 	"github.com/gin-gonic/gin"
 	"github.com/samsarahq/go/oops"
 	log "github.com/sirupsen/logrus"
@@ -16,6 +17,7 @@ import (
 type Server struct {
 	ID          string
 	Router      *gin.Engine
+	Clock       clock.Clock
 	Guesses     []string
 	LetterCloud *guess.Cloud
 }
@@ -24,6 +26,7 @@ func NewServer() *Server {
 	s := &Server{
 		ID:          "SERVER",
 		Router:      gin.Default(),
+		Clock:       clock.New(),
 		Guesses:     []string{},
 		LetterCloud: guess.NewCloud(),
 	}
@@ -69,8 +72,14 @@ func (s *Server) IndexHandler(c *gin.Context) {
 		}
 	}
 
+	nearestMs, err := util.GetNearestMs(s.Clock, nil)
+	if err != nil {
+		nearestMs = 86400000
+		log.Error(oops.Wrapf(err, "getting nearest ms val"))
+	}
+
 	c.HTML(http.StatusOK, "index.html.tpl", gin.H{
-		"B": util.GetNearestMs(),
+		"B": nearestMs,
 		"G": s.Guesses,
 		"W": s.LetterCloud.Items,
 		"D": "",
